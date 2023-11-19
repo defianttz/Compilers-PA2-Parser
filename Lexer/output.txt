@@ -1,0 +1,45 @@
+(base) PS C:\Users\defia\Documents\GitHub\Compilers-PA1-Lexer> python3 lexical_analyzer.py .\input_sourcecode.txt
+
+tokens          lexemes
+________________________
+KEYWORD          int
+IDENTIFIER       main
+Seperator        (
+Seperator        )
+Seperator        {
+KEYWORD          for
+Seperator        (
+KEYWORD          int
+IDENTIFIER       i
+Operator         =
+INTEGER          22
+Punctuation      ;
+IDENTIFIER       i
+Operator         <=
+INTEGER          100
+Punctuation      ;
+IDENTIFIER       i
+Operator         =
+IDENTIFIER       i
+Operator         +
+INTEGER          1
+Seperator        )
+Seperator        {
+KEYWORD          while
+Seperator        (
+IDENTIFIER       i
+Operator         ==
+INTEGER          100
+Operator         <<
+STRING   "Hello World!"
+Operator         <<
+IDENTIFIER       endl
+Punctuation      ;
+COMMENT          //print out
+
+Seperator        }
+Seperator        }
+KEYWORD          return
+INTEGER          0
+Punctuation      ;
+Seperator        }
