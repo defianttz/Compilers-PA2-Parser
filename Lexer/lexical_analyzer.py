@@ -4,10 +4,16 @@ import sys
 keywords = ["if", "else", "while", "for", "int", "float", "double", "char", "string", "bool",
             "void", "return", "cout", "cin", "continue", "break", "true", "false"]
 # Operators
-operators = ["+" ,"++", "-", "*", "/", "%", "=", "<", "<<", ">>", "!", "&", "|"]
+operators = ["+", "++", "-", "*", "/", "%", "=", "<", "<<", ">>", "!", "&", "|"]
 
 comments = ["//", "/*", "*/"]
-
+MULTI_OP = '*'
+L_PARAN = '('
+R_PARAN = ')'
+DIV_OP = '/'
+ADD_OP = '+'
+SUB_OP = '-'
+ASSIGN_OP = ['=']
 
 # Separators
 separators = ["(", ")", "{", "}", ";"]
@@ -15,15 +21,21 @@ separators = ["(", ")", "{", "}", ";"]
 # Punctuators
 punctuation = [";"]
 
+
 class TokenType:
     KEYWORD = 'KEYWORD'
     IDENTIFIER = 'IDENTIFIER'
     OPERATOR = 'OPERATOR'
-    INTEGER = 'INTEGER'
+    INTEGER = 'int'  # 'INTEGER'
     SEPARATOR = 'SEPARATOR'
     COMMENT = 'COMMENT'
     STRING = 'STRING'
-    
+    DIVIDE = DIV_OP
+    MULTIPLY = MULTI_OP
+    ADD = ADD_OP
+    SUBTRACT = SUB_OP
+    LEFT_PAREN = L_PARAN
+    RIGHT_PAREN = R_PARAN
 
 
 def scan_num(line):
@@ -33,6 +45,7 @@ def scan_num(line):
             break
         num += c
     return TokenType.INTEGER, int(num), len(num)
+
 
 def scan_str(line):
     delimiter = line[0]
@@ -45,8 +58,8 @@ def scan_str(line):
     string = delimiter + string + delimiter
     return TokenType.STRING, string, len(string)
 
+
 def scan_id(line):
- 
     id = ''
     for c in line:
         if not c.isdigit() and not c.isalpha() and c != '_':
@@ -57,17 +70,37 @@ def scan_id(line):
         return TokenType.KEYWORD, id, len(id)
     else:
         return TokenType.IDENTIFIER, id, len(id)
+
+
 def scan_operator(line):
     op = ''
     for c in line:
         if c not in operators or c in comments:
             break
         op += c
-    return TokenType.OPERATOR, op, len(op)
+
+    # Switch statement
+    if op == '=':
+        return TokenType.ASSIGN_OP, op, len(op)
+    elif op == '+':
+        return TokenType.ADD, op, len(op)
+    elif op == '-':
+        return TokenType.SUBTRACT, op, len(op)
+    elif op == '*':
+        return TokenType.MULTIPLY, op, len(op)
+    elif op == '/':
+        return TokenType.DIVIDE, op, len(op)
+    elif op == '(':
+        return TokenType.L_PARAN, op, len(op)
+    elif op == ')':
+        return TokenType.R_PARAN, op, len(op)
+    else:
+        return TokenType.OPERATOR, op, len(op)
+
+    # return TokenType.OPERATOR, op, len(op)
 
 
 def scan_comment(line):
-
     # Check for single line comment
     if line[0] == '/' and line[1] == '/':
         comment = line[0:2]
@@ -108,6 +141,13 @@ def lexer(line):
             typ, tok, consumed = scan_id(line[lexeme_count:])
             lexeme_count += consumed
             tokens.append((typ, tok))
+
+            # Check for operators
+        elif lexeme in operators:
+            typ, tok, consumed = scan_operator(line[lexeme_count:])
+
+            tokens.append((typ, tok))
+            lexeme_count += consumed
         elif lexeme == '/':
             typ, tok, consumed = scan_comment(line[lexeme_count:])
             lexeme_count += consumed
@@ -116,15 +156,17 @@ def lexer(line):
         elif lexeme in punctuation:
             tokens.append(('Punctuation', lexeme))
             lexeme_count += 1
-        # Check for operators
-        elif lexeme in operators:
-            typ, tok, consumed = scan_operator(line[lexeme_count:])
 
-            tokens.append(('Operator', tok))
-            lexeme_count += consumed
         # Check for separators
         elif lexeme in separators:
-            tokens.append(('Seperator', lexeme))
+
+            # switch statement for separators
+            if lexeme == L_PARAN:
+                tokens.append((TokenType.LEFT_PAREN, lexeme))
+            elif lexeme == R_PARAN:
+                tokens.append((TokenType.RIGHT_PAREN, lexeme))
+            else:
+                tokens.append(('Seperator', lexeme))
             lexeme_count += 1
         else:
             lexeme_count += 1
@@ -134,7 +176,6 @@ def lexer(line):
 
 if __name__ == "__main__":
 
-
     if len(sys.argv) != 2:
         print("Usage: python3 lexical_analyzer.py <source_code_file>")
         sys.exit(1)
@@ -143,11 +184,10 @@ if __name__ == "__main__":
     with open(source_code_file, "r") as fp:
         source_code = fp.read()
 
-
     # Scan the source code and print the tokens
     tokens = lexer(source_code)
     print("\ntokens    \tlexemes")
     print("________________________")
     for token in tokens:
-        #print(f"token: {token[0]}  lexeme: {token[1]}")
+        # print(f"token: {token[0]}  lexeme: {token[1]}")
         print(f"{token[0]} \t {token[1]}")
