@@ -7,14 +7,24 @@ debug = True
 # Table for the recursive descent parser
 ll1_table = {
     # NT: int, (, ), +, -, *, /, $
-    "E": {"int": "T E'", "(": "T E'"},
-    "E'": {"+": "+ T E'", "-": "- T E'", ")": "ε", "$": "ε"},
-    "T": {"int": "F T'", "(": "F T'"},
-    "T'": {"+": "ε", "-": "ε", "*": "* F T'", "/": "/ F T'", ")": "ε", "$": "ε"},
-    "F": {"int": "int", "(": "( E )"}
+    "E": {"int": "T E'",
+          "(": "T E'",
+          "-": "- E E'"},
+    "E'": {"+": "+ T E'",
+           "-": "- T E'",
+           ")": "ε", "$": "ε"},
+    "T": {"int": "F T'",
+          "(": "F T'"},
+    "T'": {"+": "ε",
+           "-": "ε",
+           "*": "* F T'",
+           "/": "/ F T'",
+           ")": "ε",
+           "$": "ε"},
+    "F": {"int": "int",
+          "(": "( E )"}
 }
 
-# non_terminals = ["E", "E_p" ,"T", "T_p" "F",]
 non_terminals = ["E", "E'", "T", "T'", "F"]
 
 
@@ -60,17 +70,8 @@ def llparser(tokens):
         if debug:
             stack_str = ""
             stack_str = "".join(stack)
-            """ 
-            for i in range(len(stack)):
-                stack_str += stack[i]
-            """
             tokens_str = ""
             tokens_str = "".join(tokens)
-            """ 
-            for i in range(len(tokens)):
-                tokens_str += tokens[i]
-            """
-            # prod_str = f"{x}->{ll1_table[x][a]}"
 
         if x in terminals:
             if x == a: # top of the stack is equal to the next input token
@@ -118,22 +119,10 @@ if __name__ == "__main__":
 
             # Access the tokens from the lexer
             token_list = lexer(expression)
-
-            # Place int*(int + int)/int into tokens
-            # tokens = []
-            # tokens.append("int")
-            # tokens.append("*")
-            # tokens.append("(")
-            # tokens.append("int")
-            # tokens.append("+")
-            # tokens.append("int")
-            # tokens.append(")")
-            # tokens.append("/")
-            # tokens.append("int")
-            # TODO: Implement the recursive descent parser
-
             tokens = [token_list[i][0] for i in range(len(token_list))]
             print(f"Tokens: {tokens}")
+
+            # TODO: Implement the recursive descent parser
             accept_expr = llparser(tokens)
             if accept_expr:
                 print("Expression valid")
