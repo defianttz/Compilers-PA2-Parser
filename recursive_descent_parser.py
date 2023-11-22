@@ -2,6 +2,7 @@
 import sys
 
 from Lexer.lexical_analyzer import lexer
+debug = True
 
 # Table for the recursive descent parser
 ll1_table = {
@@ -11,11 +12,11 @@ ll1_table = {
     "T": {"int": "F T'", "(": "F T'"},
     "T'": {"+": "ε", "-": "ε", "*": "* F T'", "/": "/ F T'", ")": "ε", "$": "ε"},
     "F": {"int": "int", "(": "( E )"}
-
 }
 
 # non_terminals = ["E", "E_p" ,"T", "T_p" "F",]
-non_terminals = ["E", "E'", "T", "T'" "F", ]
+non_terminals = ["E", "E'", "T", "T'", "F"]
+
 
 
 def llparser(tokens):
@@ -32,8 +33,11 @@ def llparser(tokens):
     tokens.append("$")  # Push the end of input symbol
     terminals = ["(", ")", "+", "-", "*", "/", "int", "$"]
 
-    print("{:<40}{:<80}{:<100}".format("Stack", "Input", "Action"))
-    print("------------------------------")
+    # debug output
+    if debug:
+        print("{:<40}{:<80}{:<40}".format("Stack", "Input", "Action"))
+        print("------------------------------")
+    
     while len(stack) > 0:
         # x = top of stack
         # a = next input token
@@ -46,49 +50,59 @@ def llparser(tokens):
         #   else error
         # end
 
-        x = stack[-1]
-        a = tokens[0]
+        x = stack[-1] # Get the top of the stack
+        a = tokens[0] # Get the next input token
+
         # print(f"x: {x}, a: {a}")
         # print(f"stack: {stack}  tokens: {tokens}\n")
         # print without the brackets
-        stack_str = ""
-        for i in range(len(stack)):
-            stack_str += stack[i]
-        tokens_str = ""
-        for i in range(len(tokens)):
-            tokens_str += tokens[i]
-
-        # prod_str = f"{x}->{ll1_table[x][a]}"
+        
+        if debug:
+            stack_str = ""
+            stack_str = "".join(stack)
+            """ 
+            for i in range(len(stack)):
+                stack_str += stack[i]
+            """
+            tokens_str = ""
+            tokens_str = "".join(tokens)
+            """ 
+            for i in range(len(tokens)):
+                tokens_str += tokens[i]
+            """
+            # prod_str = f"{x}->{ll1_table[x][a]}"
 
         if x in terminals:
-            if x == a:
-                stack.pop()
-                tokens.pop(0)
+            if x == a: # top of the stack is equal to the next input token
+                
+                stack.pop() # Pop the top of the stack
+                tokens.pop(0) # Pop the next input token
                 action_str = f"match {x}"
-
-                print("{:<40}{:<80}{:<100}".format(stack_str, tokens_str, action_str))
-            else:
+    
+                if debug:
+                    print("{:<40}{:<80}{:<40}".format(stack_str, tokens_str, action_str))
+            
+            else: # Reached an invalid production
                 print("Error")
                 return False
-        else:
+        else: # x is a non-terminal
 
-            action_str = f"{x}->{ll1_table[x].get(a, '')}"
-
-            print("{:<40}{:<80}{:<100}".format(stack_str, tokens_str, action_str))
+            if debug:
+                action_str = f"{x}->{ll1_table[x].get(a, '')}"
+                print("{:<40}{:<80}{:<40}".format(stack_str, tokens_str, action_str))
 
             value = ll1_table.get(x, {}).get(a, "")
             # if ll1_table[x][a] != "":
-            if value != "":
-
+            if value != "": # If the production is not empty
+                
                 if ll1_table[x][a] != "ε":
                     stack.pop()
                     for i in range(len(ll1_table[x][a].split(" "))):
                         stack.append(ll1_table[x][a].split(" ")[-i - 1])
-                else:
+                else: # If the production is empty
                     stack.pop()
-
                     continue
-            else:
+            else: # Reached an invalid production
                 print("Error")
                 return False
     return True
