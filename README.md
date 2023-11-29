@@ -1,7 +1,7 @@
 # Compilers-PA2-Parser
 By: Sammy, Liam
 
-#Rewritten grammar G into G’
+##Rewritten grammar G into G’
 
 G = {
 E → E + T | E – T | -E | T
