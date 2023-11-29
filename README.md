@@ -3,19 +3,19 @@ By: Sammy, Liam
 
 ## Rewritten grammar G into G’
 
-G = {
-E → E + T | E – T | -E | T
-T → T * F | T/F | F
-F → int | (E)
-}
+  G = {
+  E → E + T | E – T | -E | T
+  T → T * F | T/F | F
+  F → int | (E)
+  }
 
-G’= {
-E -> TE' | - E E’		
-E' -> + TE' | - TE' | ε	
-T -> FT'		
-T' -> * FT' | / FT' | ε
-F -> int | (E)
-}
+  G’= {
+  E -> TE' | - E E’		
+  E' -> + TE' | - TE' | ε	
+  T -> FT'		
+  T' -> * FT' | / FT' | ε
+  F -> int | (E)
+  }
 
 
 
