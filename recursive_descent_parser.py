@@ -2,7 +2,7 @@
 import sys
 
 from Lexer.lexical_analyzer import lexer
-debug = True
+debug = False
 
 # Table for the recursive descent parser
 ll1_table = {
@@ -84,7 +84,8 @@ def llparser(tokens):
                     print("{:<40}{:<80}{:<40}".format(stack_str, tokens_str, action_str))
             
             else: # Reached an invalid production
-                print("Error")
+                if debug:
+                    print("Error")
                 return False
         else: # x is a non-terminal
 
@@ -104,7 +105,8 @@ def llparser(tokens):
                     stack.pop()
                     continue
             else: # Reached an invalid production
-                print("Error")
+                if debug:
+                    print("Error")
                 return False
     return True
 
@@ -112,7 +114,7 @@ def llparser(tokens):
 if __name__ == "__main__":
 
     while True:
-        expression = input("Enter the expression: (type 'exit' to leave')\n")
+        expression = input("\nEnter the expression: (type 'exit' to leave')\n")
         if expression == "exit":
             break
         else:
@@ -120,14 +122,19 @@ if __name__ == "__main__":
             # Access the tokens from the lexer
             token_list = lexer(expression)
             tokens = [token_list[i][0] for i in range(len(token_list))]
-            print(f"Tokens: {tokens}")
 
-            # TODO: Implement the recursive descent parser
+            if debug:
+                print(f"Tokens: {tokens}")
+
+            # recursive descent parser
             accept_expr = llparser(tokens)
             if accept_expr:
-                print("Expression valid")
-                print("Result = 0")
+                if debug:
+                    print("Expression valid\n")
+                # Evaluate the expression
+                result = eval(expression)
+                print(f"Result = {result}")
             else:
-                print("Entered expression is invalid")
-            # TODO: Implement Calculator
+                print("Entered expression is invalid\n")
+
 
