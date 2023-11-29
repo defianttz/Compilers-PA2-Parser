@@ -2,13 +2,14 @@
 By: Sammy, Liam
 
 ## Rewritten grammar G into G’
-
+given Grammar:
   G = {
   E → E + T | E – T | -E | T
   T → T * F | T/F | F
   F → int | (E)
   }
-
+  
+Revised Grammar:
   G’= {
   E -> TE' | - E E’		
   E' -> + TE' | - TE' | ε	
