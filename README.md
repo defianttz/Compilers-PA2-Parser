@@ -2,10 +2,22 @@
 By: Sammy, Liam
 
 # Introduction
-## todo
+This project implements an arithmetic expression parser in Python. The input expression is tokenized by the Lexer. The parser is built using the principles of left recursive descent parsing. 
 
 # How to Run
+Usage: python3 .\recursive_descent_parser.py
 
 ## Requirements
+Python 3.x
 
 # Example Input/Output
+Ex 1)
+Enter the expression: (type 'exit' to leave')
+3+5 
+Expression valid
+Result = 8
+
+Ex 2)
+Enter the expression: (type 'exit' to leave')
+3+5/ 
+Error Entered expression is invalid
