@@ -4,6 +4,19 @@
 # Introduction
 This project implements an arithmetic expression parser in Python. The input expression is tokenized by the Lexer. The parser is built using the principles of left recursive descent parsing. 
 
+
+The parsing algorithm is implemented using a stack and a table of parsing productions. The parsing productions are used to determine the next action to take based on the current stack and input. The parsing productions are generated from the the revised grammar `G'` (see below).
+
+## LL(1) Parsing Table
+
+| Non-Terminal (NT) |  +  |  -  |  *  |  /  |  (  |  )  | int |  $  |
+|-------------------|-----|-----|-----|-----|-----|-----|-----|-----|
+| E                 |     |     |     |     | TE' |     | TE' |     |
+| E'                | +TE' | -TE' |     |     |     | ε |     | ε |
+| T                 |     |     |     |     | T->FT' |     | FT' |     |
+| T'                | ε | ε | *FT' | /FT' |     | ε |     | ε |
+| F                 |     |     |     |     | (E) |     | int |     |
+
 ## Grammar Transformation
 The given grammar `G` is transformed into a revised grammar `G'`.
 
