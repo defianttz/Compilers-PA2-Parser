@@ -45,8 +45,8 @@ def llparser(tokens):
 
     # debug output
     if debug:
-        print("{:<40}{:<80}{:<40}".format("Stack", "Input", "Action"))
-        print("------------------------------")
+        print("| {:<20} | {:<20} | {:<20} |".format("Stack", "Input", "Action"))
+        print("|" + "-"*22 + "|" + "-"*22 + "|" + "-"*22 + "|")
     
     while len(stack) > 0:
         # x = top of stack
@@ -63,9 +63,6 @@ def llparser(tokens):
         x = stack[-1] # Get the top of the stack
         a = tokens[0] # Get the next input token
 
-        # print(f"x: {x}, a: {a}")
-        # print(f"stack: {stack}  tokens: {tokens}\n")
-        # print without the brackets
         
         if debug:
             stack_str = ""
@@ -81,7 +78,7 @@ def llparser(tokens):
                 action_str = f"match {x}"
     
                 if debug:
-                    print("{:<40}{:<80}{:<40}".format(stack_str, tokens_str, action_str))
+                    print("| {:<20} | {:<20} | {:<20} |".format(stack_str, tokens_str, action_str))
             
             else: # Reached an invalid production
                 if debug:
@@ -91,7 +88,7 @@ def llparser(tokens):
 
             if debug:
                 action_str = f"{x}->{ll1_table[x].get(a, '')}"
-                print("{:<40}{:<80}{:<40}".format(stack_str, tokens_str, action_str))
+                print("| {:<20} | {:<20} | {:<20} |".format(stack_str, tokens_str, action_str))
 
             value = ll1_table.get(x, {}).get(a, "")
             # if ll1_table[x][a] != "":
@@ -113,7 +110,22 @@ def llparser(tokens):
 
 if __name__ == "__main__":
 
+    # Print Welcome message
+    print("Welcome to the Recursive Descent Parser Calculator\n")
+
+
+
+    # Ask the user if they want to see the parsing productions
+    debug_opt = input("\nShow the parsing productions? (y or n)\n")
+    if debug_opt == "y":
+        debug = True
+    elif debug_opt == "n":
+        debug = False
+    else:
+        debug = False
     while True:
+
+        
         expression = input("\nEnter the expression: (type 'exit' to leave')\n")
         if expression == "exit":
             break
